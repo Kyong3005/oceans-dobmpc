@@ -148,9 +148,8 @@
   <section id="method">
     <div class="wrap">
       <h2>Method Overview</h2>
-      <p class="lead">A disturbance observer embeds its estimate inside the MPC prediction model &mdash; not the control input.</p>
-      <figure style="max-width:60%; margin:0 auto">
-        <div class="media"><img src="assets/diagram.png" alt="DOB-MPC control architecture" /></div>
+      <figure>
+        <div class="media" style="max-width:60%; margin:0 auto"><img src="assets/diagram.png" alt="DOB-MPC control architecture" /></div>
         <figcaption>
           <b>DOB-MPC architecture.</b> The disturbance observer (DOB) estimates the lumped disturbance and
           model uncertainty acting on the USV and delivers a filtered estimate <b>d&#770;<sub>f</sub></b> to the MPC.
@@ -167,7 +166,7 @@
   <section id="platform">
     <div class="wrap">
       <h2>Experimental Platform</h2>
-      <p class="lead">Open-sea trials off Jeongok Port, Korea, on the 8&nbsp;m outboard single-engine USV AURA.</p>
+      <p class="lead">The 8&nbsp;m outboard single-engine USV AURA.</p>
       <figure>
         <div class="two">
           <div class="media"><img src="assets/aura.png" alt="AURA USV and onboard sensor suite" /></div>
@@ -192,7 +191,7 @@
   <section id="results">
     <div class="wrap">
       <h2>Results</h2>
-      <p class="lead">DOB-MPC keeps the underactuated hull on the figure-eight reference where nominal MPC drifts inside the loops.</p>
+      <p class="lead">Tracking speed 6 knots (3 m/s) &middot; MPC horizon N = 40 &middot; MPC sampling 0.5 s &middot; DOB sampling 0.1 s &middot; Wind 6 knots &middot; Wave 0.1 m</p>
 
       <div class="stack">
 
@@ -216,10 +215,11 @@
             </div>
           </div>
           <figcaption>
-            <b>Open-sea figure-eight tracking (3&times; speed).</b> <b>Top:</b> aerial footage of AURA against the
-            commanded reference (dashed). <b>Bottom:</b> the reconstructed trajectory &mdash; travelled path and
-            live MPC predicted horizon (green) against the same reference. <b>(Left)</b> Nominal MPC drifts inside
-            the loops; <b>(right)</b> DOB-MPC stays on the reference under the same wind, wave, and current disturbance.
+            <b>Open sea figure eight tracking on the 150 &times; 75 m reference (3&times; speed).</b> Top shows aerial
+            footage of AURA against the commanded reference (dashed). Bottom shows the reconstructed trajectory, the
+            travelled path and the live MPC predicted horizon (green) against the same reference. On the left nominal
+            MPC drifts inside the loops. On the right DOB-MPC stays on the reference under the same wind, wave, and
+            current disturbance.
           </figcaption>
         </figure>
 
@@ -238,8 +238,6 @@
             </tbody>
           </table>
           </div>
-          <p class="note">Tracking speed 6 knots (3 m/s) &middot; MPC horizon N = 40 &middot; MPC sampling 0.5 s &middot; DOB sampling 0.1 s.
-          DOB-MPC lowers both RMSE and maximum tracking error in each experiment.</p>
         </div>
 
       </div>
