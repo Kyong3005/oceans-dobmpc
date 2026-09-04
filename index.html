@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Robust Trajectory Tracking for USVs via Disturbance Observer-Based MPC</title>
+<meta name="description" content="OCEANS 2026 — Robust trajectory tracking of unmanned surface vehicles via disturbance observer-based model predictive control (DOB-MPC), validated in open-sea experiments on the 8 m USV AURA." />
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1d24; --muted:#5c6470; --line:#e6e8ec;
+    --card:#f7f8fa; --accent:#1b5fa6; --accent-soft:#eaf1f9;
+    --maxw:960px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1319; --fg:#e8eaee; --muted:#9aa3b0; --line:#232a33;
+      --card:#151b23; --accent:#5aa0e6; --accent-soft:#16222f;
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65; font-size:17px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 20px}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  .topnav{max-width:var(--maxw); margin:0 auto; padding:18px 20px 0; font-size:.9rem}
+  .topnav a{color:var(--muted); font-weight:600}
+
+  header{padding:34px 0 32px; text-align:center; border-bottom:1px solid var(--line)}
+  h1{font-size:2.05rem; line-height:1.25; margin:0 0 6px; letter-spacing:-.01em}
+  .venue{color:var(--muted); font-size:.95rem; margin:14px 0 0}
+  .venue .badge{display:inline-block; background:var(--accent-soft); color:var(--accent);
+    font-weight:700; font-size:.78rem; letter-spacing:.04em; text-transform:uppercase;
+    padding:4px 10px; border-radius:999px; margin-left:6px}
+  .authors{margin:22px auto 4px; max-width:760px; font-size:1.02rem}
+  .authors b{font-weight:600}
+  .authors sup{color:var(--accent); font-weight:700}
+  .affil{color:var(--muted); font-size:.9rem; margin:6px auto 0; max-width:760px}
+  .corr{color:var(--muted); font-size:.85rem; margin-top:8px}
+
+  .links{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:26px 0 4px}
+  .btn{display:inline-flex; align-items:center; gap:8px;
+    background:var(--fg); color:var(--bg); padding:9px 18px; border-radius:999px;
+    font-size:.92rem; font-weight:600; transition:transform .06s ease, opacity .15s ease;}
+  .btn:hover{opacity:.88; text-decoration:none; transform:translateY(-1px)}
+  .btn.ghost{background:transparent; color:var(--fg); border:1px solid var(--line)}
+  .btn .ico{font-size:1.05em; line-height:1}
+
+  section{padding:48px 0; border-bottom:1px solid var(--line)}
+  h2{font-size:1.5rem; margin:0 0 6px; letter-spacing:-.01em}
+  .lead{color:var(--muted); margin:0 0 26px; font-size:1rem}
+  p.body{margin:0 0 16px}
+  .abstract{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:26px 28px}
+  .abstract p{margin:0; text-align:justify}
+
+  figure{margin:0}
+  .media{border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--card)}
+  .media img, .media video{display:block; width:100%; height:auto}
+  figcaption{color:var(--muted); font-size:.92rem; margin-top:12px; padding:0 2px}
+  figcaption b{color:var(--fg)}
+  .vlabel{display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--accent); background:var(--accent-soft);
+    padding:4px 10px; border-radius:6px; margin-bottom:12px;}
+  .stack{display:grid; gap:40px}
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media (max-width:640px){ .two{grid-template-columns:1fr} }
+  .vtitle{font-weight:700; color:var(--fg); font-size:.9rem; margin:0 0 7px}
+
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:8px}
+  .cell{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px; text-align:center}
+  .cell .num{font-size:1.7rem; font-weight:700; color:var(--accent); line-height:1.1}
+  .cell .cap{font-size:.9rem; color:var(--muted); margin-top:4px}
+  @media (max-width:640px){ .grid{grid-template-columns:1fr} h1{font-size:1.7rem} }
+
+  table.res{width:100%; border-collapse:collapse; font-size:.94rem; margin-top:6px; overflow:hidden;
+    border:1px solid var(--line); border-radius:12px}
+  table.res th, table.res td{padding:11px 14px; text-align:center; border-bottom:1px solid var(--line)}
+  table.res thead th{background:var(--card); font-size:.82rem; text-transform:uppercase; letter-spacing:.03em; color:var(--muted)}
+  table.res tbody tr:last-child td{border-bottom:none}
+  table.res .imp{color:var(--accent); font-weight:700}
+  .tblwrap{overflow-x:auto}
+  .note{font-size:.85rem; color:var(--muted); margin-top:10px}
+
+  ol.refs{padding-left:20px; margin:0; color:var(--fg)}
+  ol.refs li{margin:0 0 8px; font-size:.9rem}
+  footer{padding:34px 0 60px; text-align:center; color:var(--muted); font-size:.86rem}
+  .logos{display:flex; gap:22px; align-items:center; justify-content:center; flex-wrap:wrap; margin-bottom:16px}
+  .logos img{height:34px; width:auto; opacity:.9}
+</style>
+</head>
+<body>
+
+<div class="topnav"><a href="../">&larr; Kiyong Park &middot; Home</a></div>
+
+<header>
+  <div class="wrap">
+    <h1>Robust Trajectory Tracking for Unmanned Surface Vehicles<br>via Disturbance Observer-Based MPC</h1>
+    <p class="venue">OCEANS 2026 <span class="badge">Accepted</span></p>
+
+    <p class="authors">
+      Kiyong Park<sup>1</sup>, Changyu Lee<sup>2</sup>, Jinwhan Kim<sup>1,&#9993;</sup>
+    </p>
+    <p class="affil">
+      <sup>1</sup>Dept. of Mechanical Engineering, KAIST, Daejeon &nbsp;&middot;&nbsp;
+      <sup>2</sup>Dept. of Mechanical and Automotive Engineering, Kongju National University, Cheonan, Republic of Korea
+    </p>
+    <p class="corr">&#9993; Corresponding author: Jinwhan Kim</p>
+
+    <div class="links">
+      <a class="btn ghost" href="#method"><span class="ico">&#9881;</span> Method</a>
+      <a class="btn ghost" href="#video"><span class="ico">&#9654;</span> Videos</a>
+      <a class="btn ghost" href="#results"><span class="ico">&#128202;</span> Results</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- Abstract -->
+  <section id="abstract">
+    <div class="wrap">
+      <h2>Abstract</h2>
+      <div class="abstract">
+        <p>
+          This paper proposes a disturbance observer-based model predictive control (DOB-MPC)
+          framework for robust trajectory tracking of unmanned surface vehicles (USVs) under
+          environmental disturbances. While model predictive control (MPC) naturally handles the
+          underactuation and actuator constraints of USVs through constrained optimization, its
+          model-based nature makes it vulnerable to external disturbances and model uncertainty,
+          which degrade tracking accuracy. To overcome this, the proposed framework incorporates
+          real-time disturbance estimates into the MPC prediction model rather than directly
+          compensating the control input, which yields disturbance-aware and feasible control
+          inputs while avoiding the instability and degraded performance arising from slow actuator
+          dynamics. Validated through open-sea experiments on an 8&nbsp;m class USV, the proposed
+          method achieves significant improvements in trajectory tracking performance compared to
+          nominal MPC.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Method -->
+  <section id="method">
+    <div class="wrap">
+      <h2>Method Overview</h2>
+      <p class="lead">A disturbance observer embeds its estimate inside the MPC prediction model &mdash; not the control input.</p>
+      <figure>
+        <div class="media"><img src="assets/diagram.png" alt="DOB-MPC control architecture" /></div>
+        <figcaption>
+          <b>DOB-MPC architecture.</b> The disturbance observer (DOB) estimates the lumped disturbance and
+          model uncertainty acting on the USV and delivers a filtered estimate <b>d&#770;<sub>f</sub></b> to the MPC.
+          Rather than adding it to the command, the MPC embeds it in the prediction model
+          <b>x<sup>+</sup> = f(x, u) + B&#8202;d&#770;<sub>f</sub></b>, so the controller stays disturbance-aware while
+          respecting the underactuated dynamics and the input amplitude / rate limits <b>g(u,&#916;u) &le; 0</b>
+          over the whole horizon.
+        </figcaption>
+      </figure>
+
+      <div class="grid" style="margin-top:34px">
+        <div class="cell"><div class="num">8 m</div><div class="cap">Single-engine USV "AURA"</div></div>
+        <div class="cell"><div class="num">N = 40</div><div class="cap">MPC horizon &times; 0.5 s = 20 s</div></div>
+        <div class="cell"><div class="num">acados</div><div class="cap">Real-time SQP / HPIPM solver</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform -->
+  <section id="platform">
+    <div class="wrap">
+      <h2>Experimental Platform</h2>
+      <p class="lead">Open-sea trials off Jeongok Port, Korea, on the 8&nbsp;m outboard single-engine USV AURA.</p>
+      <figure>
+        <div class="media"><img src="assets/aura.png" alt="AURA USV and onboard sensor suite" /></div>
+        <figcaption>
+          <b>AURA.</b> The vessel pose and velocity are estimated by an onboard extended Kalman filter (EKF)
+          fusing a 100&nbsp;Hz attitude-and-heading reference system (AHRS) with a 10&nbsp;Hz global positioning
+          system (GPS), running on the onboard control PC. A single stern outboard engine (steering angle
+          <b>&delta;</b>, thrust <b>F</b>) actuates the underactuated hull.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section id="results">
+    <div class="wrap">
+      <h2>Results</h2>
+      <p class="lead">DOB-MPC keeps the underactuated hull on the figure-eight reference where nominal MPC drifts inside the loops.</p>
+
+      <div class="stack">
+
+        <figure>
+          <div class="two">
+            <div class="media"><img src="assets/nominal.png" alt="Nominal MPC aerial view" /></div>
+            <div class="media"><img src="assets/dob.png" alt="DOB-MPC aerial view" /></div>
+          </div>
+          <figcaption>
+            <b>Aerial view, Experiment&nbsp;1.</b> <b>(a)</b> Nominal MPC shows large tracking errors and cuts
+            inside the reference (dashed). <b>(b)</b> DOB-MPC tracks the reference closely under the same
+            wind, wave, and current disturbance.
+          </figcaption>
+        </figure>
+
+        <figure>
+          <div class="media"><img src="assets/exp_traj.png" alt="Trajectory tracking comparison, Experiment 2" /></div>
+          <figcaption>
+            <b>Trajectory tracking (Experiment&nbsp;2).</b> Nominal MPC (red) falls inside the reference loops,
+            whereas DOB-MPC (blue) stays close to the reference (black dashed) throughout the larger
+            figure-eight.
+          </figcaption>
+        </figure>
+
+        <figure>
+          <div class="media"><img src="assets/exp_error.png" alt="Tracking error over time, Experiment 2" /></div>
+          <figcaption>
+            <b>Tracking error over time (Experiment&nbsp;2).</b> DOB-MPC (blue) holds a consistently smaller
+            cross-track error than nominal MPC (red) across the run.
+          </figcaption>
+        </figure>
+
+        <div>
+          <div class="vtitle" style="font-size:1.05rem; margin-bottom:12px">Open-sea tracking performance</div>
+          <div class="tblwrap">
+          <table class="res">
+            <thead>
+              <tr><th>Exp.</th><th>Trajectory</th><th>Method</th><th>RMSE (m)</th><th>Max error (m)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td rowspan="2">1</td><td rowspan="2">150 &times; 75 m</td><td>Nominal MPC</td><td>8.09</td><td>19.49</td></tr>
+              <tr><td>DOB-MPC</td><td class="imp">3.31 (59% &#9660;)</td><td class="imp">6.56 (66% &#9660;)</td></tr>
+              <tr><td rowspan="2">2</td><td rowspan="2">240 &times; 85 m</td><td>Nominal MPC</td><td>5.21</td><td>14.84</td></tr>
+              <tr><td>DOB-MPC</td><td class="imp">3.94 (24% &#9660;)</td><td class="imp">11.01 (26% &#9660;)</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <p class="note">Tracking speed 6 knots (3 m/s) &middot; MPC horizon N = 40 &middot; MPC sampling 0.5 s &middot; DOB sampling 0.1 s.
+          DOB-MPC lowers both RMSE and maximum tracking error in each experiment.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Videos -->
+  <section id="video">
+    <div class="wrap">
+      <h2>Supplementary Videos</h2>
+      <p class="lead">Live figure-eight tracking with the MPC prediction horizon, reconstructed from the on-board EKF and <code>/mpc_vis</code> logs.</p>
+
+      <div class="stack">
+        <figure>
+          <span class="vlabel">Aerial &middot; Open sea</span>
+          <div class="media">
+            <video controls autoplay muted loop playsinline preload="metadata" poster="assets/compare_synced.jpg">
+              <source src="assets/compare_synced.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <figcaption>Aerial footage of AURA tracking the figure-eight reference at sea (3&times; speed).</figcaption>
+        </figure>
+
+        <figure>
+          <span class="vlabel">Reconstructed tracking &middot; two runs</span>
+          <div class="two">
+            <div class="vcell">
+              <div class="vtitle">Well-tracked run (mean error 3.66 m)</div>
+              <div class="media"><video controls autoplay muted loop playsinline preload="metadata" poster="">
+                <source src="assets/figure8_good.mp4" type="video/mp4" /></video></div>
+            </div>
+            <div class="vcell">
+              <div class="vtitle">Disturbed run (mean error 6.24 m)</div>
+              <div class="media"><video controls autoplay muted loop playsinline preload="metadata" poster="">
+                <source src="assets/figure8_bad.mp4" type="video/mp4" /></video></div>
+            </div>
+          </div>
+          <figcaption>
+            The vessel (hull), its travelled path, and the live MPC predicted horizon (green) against the
+            commanded figure-eight reference (dashed), both at 3&times; speed. The two runs share the identical
+            reference and differ only in how well the vessel tracked it.
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- References -->
+  <section id="refs">
+    <div class="wrap">
+      <h2>Selected References</h2>
+      <ol class="refs">
+        <li>K. Park, C. Lee, and J. Kim, "Robust Trajectory Tracking for Surface Vehicles via
+          &#8466;<sub>1</sub>-Augmented Model Predictive Control," <i>OCEANS 2025 Brest</i>, 2025, pp. 1&ndash;5.</li>
+        <li>C. Lee, D. Chung, J. Kim, and J. Kim, "Nonlinear model predictive control with obstacle
+          avoidance constraints for autonomous navigation in a canal environment,"
+          <i>IEEE/ASME Trans. Mechatronics</i>, vol. 29, no. 3, 2024.</li>
+        <li>R. Verschueren et&nbsp;al., "acados &mdash; a modular open-source framework for fast embedded
+          optimal control," <i>Math. Program. Comput.</i>, vol. 14, no. 1, 2022.</li>
+        <li>T. I. Fossen, <i>Handbook of Marine Craft Hydrodynamics and Motion Control</i>. Wiley, 2011.</li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="logos">
+      <img src="assets/kaist_logo.png" alt="KAIST" />
+      <img src="assets/morin_logo.png" alt="MORIN Lab" />
+    </div>
+    &copy; 2026 Kiyong Park &middot; Mobile Robotics &amp; Intelligence Laboratory (MORIN), KAIST &middot;
+    <a href="../">Home</a>
+  </div>
+</footer>
+
+</body>
+</html>
