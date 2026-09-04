@@ -113,7 +113,7 @@
 
     <div class="links">
       <a class="btn ghost" href="#method"><span class="ico">&#9881;</span> Method</a>
-      <a class="btn ghost" href="#video"><span class="ico">&#9654;</span> Videos</a>
+      <a class="btn ghost" href="#platform"><span class="ico">&#9875;</span> Platform</a>
       <a class="btn ghost" href="#results"><span class="ico">&#128202;</span> Results</a>
     </div>
   </div>
@@ -149,7 +149,7 @@
     <div class="wrap">
       <h2>Method Overview</h2>
       <p class="lead">A disturbance observer embeds its estimate inside the MPC prediction model &mdash; not the control input.</p>
-      <figure>
+      <figure style="max-width:60%; margin:0 auto">
         <div class="media"><img src="assets/diagram.png" alt="DOB-MPC control architecture" /></div>
         <figcaption>
           <b>DOB-MPC architecture.</b> The disturbance observer (DOB) estimates the lumped disturbance and
@@ -160,12 +160,6 @@
           over the whole horizon.
         </figcaption>
       </figure>
-
-      <div class="grid" style="margin-top:34px">
-        <div class="cell"><div class="num">8 m</div><div class="cap">Single-engine USV "AURA"</div></div>
-        <div class="cell"><div class="num">N = 40</div><div class="cap">MPC horizon &times; 0.5 s = 20 s</div></div>
-        <div class="cell"><div class="num">acados</div><div class="cap">Real-time SQP / HPIPM solver</div></div>
-      </div>
     </div>
   </section>
 
@@ -175,12 +169,20 @@
       <h2>Experimental Platform</h2>
       <p class="lead">Open-sea trials off Jeongok Port, Korea, on the 8&nbsp;m outboard single-engine USV AURA.</p>
       <figure>
-        <div class="media"><img src="assets/aura.png" alt="AURA USV and onboard sensor suite" /></div>
+        <div class="two">
+          <div class="media"><img src="assets/aura.png" alt="AURA USV and onboard sensor suite" /></div>
+          <div class="media">
+            <video controls autoplay muted loop playsinline preload="metadata" poster="assets/platform_demo.jpg">
+              <source src="assets/platform_demo.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </div>
         <figcaption>
           <b>AURA.</b> The vessel pose and velocity are estimated by an onboard extended Kalman filter (EKF)
           fusing a 100&nbsp;Hz attitude-and-heading reference system (AHRS) with a 10&nbsp;Hz global positioning
           system (GPS), running on the onboard control PC. A single stern outboard engine (steering angle
-          <b>&delta;</b>, thrust <b>F</b>) actuates the underactuated hull.
+          <b>&delta;</b>, thrust <b>F</b>) actuates the underactuated hull. <b>(Right)</b> AURA underway during
+          the open-sea trials.
         </figcaption>
       </figure>
     </div>
@@ -196,30 +198,28 @@
 
         <figure>
           <div class="two">
-            <div class="media"><img src="assets/nominal.png" alt="Nominal MPC aerial view" /></div>
-            <div class="media"><img src="assets/dob.png" alt="DOB-MPC aerial view" /></div>
+            <div class="vcell">
+              <div class="vtitle">Nominal MPC</div>
+              <div class="media">
+                <video controls autoplay muted loop playsinline preload="metadata" poster="assets/comp_nominal.jpg">
+                  <source src="assets/comp_nominal.mp4" type="video/mp4" />
+                </video>
+              </div>
+            </div>
+            <div class="vcell">
+              <div class="vtitle">DOB-MPC</div>
+              <div class="media">
+                <video controls autoplay muted loop playsinline preload="metadata" poster="assets/comp_dob.jpg">
+                  <source src="assets/comp_dob.mp4" type="video/mp4" />
+                </video>
+              </div>
+            </div>
           </div>
           <figcaption>
-            <b>Aerial view, Experiment&nbsp;1.</b> <b>(a)</b> Nominal MPC shows large tracking errors and cuts
-            inside the reference (dashed). <b>(b)</b> DOB-MPC tracks the reference closely under the same
-            wind, wave, and current disturbance.
-          </figcaption>
-        </figure>
-
-        <figure>
-          <div class="media"><img src="assets/exp_traj.png" alt="Trajectory tracking comparison, Experiment 2" /></div>
-          <figcaption>
-            <b>Trajectory tracking (Experiment&nbsp;2).</b> Nominal MPC (red) falls inside the reference loops,
-            whereas DOB-MPC (blue) stays close to the reference (black dashed) throughout the larger
-            figure-eight.
-          </figcaption>
-        </figure>
-
-        <figure>
-          <div class="media"><img src="assets/exp_error.png" alt="Tracking error over time, Experiment 2" /></div>
-          <figcaption>
-            <b>Tracking error over time (Experiment&nbsp;2).</b> DOB-MPC (blue) holds a consistently smaller
-            cross-track error than nominal MPC (red) across the run.
+            <b>Open-sea figure-eight tracking (3&times; speed).</b> Aerial footage of AURA against the commanded
+            reference (dashed), with the reconstructed trajectory &mdash; travelled path and live MPC predicted
+            horizon (green) &mdash; inset at bottom right. <b>(Left)</b> Nominal MPC drifts inside the loops;
+            <b>(right)</b> DOB-MPC stays on the reference under the same wind, wave, and current disturbance.
           </figcaption>
         </figure>
 
@@ -243,65 +243,6 @@
         </div>
 
       </div>
-    </div>
-  </section>
-
-  <!-- Videos -->
-  <section id="video">
-    <div class="wrap">
-      <h2>Supplementary Videos</h2>
-      <p class="lead">Live figure-eight tracking with the MPC prediction horizon, reconstructed from the on-board EKF and <code>/mpc_vis</code> logs.</p>
-
-      <div class="stack">
-        <figure>
-          <span class="vlabel">Aerial &middot; Open sea</span>
-          <div class="media">
-            <video controls autoplay muted loop playsinline preload="metadata" poster="assets/compare_synced.jpg">
-              <source src="assets/compare_synced.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-          <figcaption>Aerial footage of AURA tracking the figure-eight reference at sea (3&times; speed).</figcaption>
-        </figure>
-
-        <figure>
-          <span class="vlabel">Reconstructed tracking &middot; two runs</span>
-          <div class="two">
-            <div class="vcell">
-              <div class="vtitle">Well-tracked run (mean error 3.66 m)</div>
-              <div class="media"><video controls autoplay muted loop playsinline preload="metadata" poster="">
-                <source src="assets/figure8_good.mp4" type="video/mp4" /></video></div>
-            </div>
-            <div class="vcell">
-              <div class="vtitle">Disturbed run (mean error 6.24 m)</div>
-              <div class="media"><video controls autoplay muted loop playsinline preload="metadata" poster="">
-                <source src="assets/figure8_bad.mp4" type="video/mp4" /></video></div>
-            </div>
-          </div>
-          <figcaption>
-            The vessel (hull), its travelled path, and the live MPC predicted horizon (green) against the
-            commanded figure-eight reference (dashed), both at 3&times; speed. The two runs share the identical
-            reference and differ only in how well the vessel tracked it.
-          </figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- References -->
-  <section id="refs">
-    <div class="wrap">
-      <h2>Selected References</h2>
-      <ol class="refs">
-        <li>K. Park, C. Lee, and J. Kim, "Robust Trajectory Tracking for Surface Vehicles via
-          &#8466;<sub>1</sub>-Augmented Model Predictive Control," <i>OCEANS 2025 Brest</i>, 2025, pp. 1&ndash;5.</li>
-        <li>C. Lee, D. Chung, J. Kim, and J. Kim, "Nonlinear model predictive control with obstacle
-          avoidance constraints for autonomous navigation in a canal environment,"
-          <i>IEEE/ASME Trans. Mechatronics</i>, vol. 29, no. 3, 2024.</li>
-        <li>R. Verschueren et&nbsp;al., "acados &mdash; a modular open-source framework for fast embedded
-          optimal control," <i>Math. Program. Comput.</i>, vol. 14, no. 1, 2022.</li>
-        <li>T. I. Fossen, <i>Handbook of Marine Craft Hydrodynamics and Motion Control</i>. Wiley, 2011.</li>
-      </ol>
     </div>
   </section>
 
