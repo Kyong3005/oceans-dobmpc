@@ -59,16 +59,20 @@
   .abstract p{margin:0; text-align:justify}
 
   figure{margin:0}
+  img, video{max-width:100%; height:auto}
   .media{border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--card)}
   .media img, .media video{display:block; width:100%; height:auto}
+  .diagram{max-width:60%; margin:0 auto}
+  @media (max-width:640px){ .diagram{max-width:100%} }
   figcaption{color:var(--muted); font-size:.92rem; margin-top:12px; padding:0 2px}
   figcaption b{color:var(--fg)}
   .vlabel{display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.06em;
     text-transform:uppercase; color:var(--accent); background:var(--accent-soft);
     padding:4px 10px; border-radius:6px; margin-bottom:12px;}
-  .stack{display:grid; gap:40px}
-  .two{display:grid; grid-template-columns:1fr 1fr; gap:14px}
-  @media (max-width:640px){ .two{grid-template-columns:1fr} }
+  .stack{display:grid; gap:40px; min-width:0}
+  .two{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px}
+  .two > *, .vcell, .media{min-width:0}
+  @media (max-width:640px){ .two{grid-template-columns:minmax(0,1fr)} }
   .vtitle{font-weight:700; color:var(--fg); font-size:.9rem; margin:0 0 7px}
 
   .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:8px}
@@ -149,7 +153,7 @@
     <div class="wrap">
       <h2>Method Overview</h2>
       <figure>
-        <div class="media" style="max-width:60%; margin:0 auto"><img src="assets/diagram.png" alt="DOB-MPC control architecture" /></div>
+        <div class="media diagram"><img src="assets/diagram.png" alt="DOB-MPC control architecture" /></div>
         <figcaption>
           <b>DOB-MPC architecture.</b> The disturbance observer (DOB) estimates the lumped disturbance and
           model uncertainty acting on the USV and delivers a filtered estimate <b>d&#770;<sub>f</sub></b> to the MPC.
